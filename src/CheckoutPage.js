@@ -1,5 +1,6 @@
+
 // CheckoutPage.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
 import { useNavigate } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import {FaTimes, FaBars } from 'react-icons/fa';
@@ -22,19 +23,10 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
   const [isFormValid, setIsFormValid] = useState(false);
   const PAYPAL_CLIENT_ID = "AYU8iAvPKiilN-fXFj-66g2J_buNQXfICl4F9dl5Yqr06Cjtz1VQAYZmf7Bk-3QUHTlnUHC6yvlAwEjb";
 
-
   const EXCHANGE_RATE_USD_TO_DHS = 10.0;
 
-useEffect(() => {
-  validateForm();
-}, [formData, cart, validateForm]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const validateForm = () => {
+  // Wrap validateForm in useCallback
+  const validateForm = useCallback(() => {
     let errors = {};
     let valid = true;
 
@@ -77,6 +69,15 @@ useEffect(() => {
     setFormErrors(errors);
     setIsFormValid(valid);
     return valid;
+  }, [formData, cart]); // Add formData and cart as dependencies for useCallback
+
+  useEffect(() => {
+    validateForm();
+  }, [formData, cart, validateForm]); // Keep validateForm in useEffect dependencies
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const createOrder = (data, actions) => {
