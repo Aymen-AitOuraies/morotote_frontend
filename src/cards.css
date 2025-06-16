@@ -86,12 +86,13 @@
 }
 
 .filter span {
-    padding: 8px 20px;
-    background-color: #ffcc53;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.3s ease;
+padding: 11px 18px;
+  background-color: #ffcc53;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 800;
+  transition: all 0.3s ease;
+  font-size: 11px;
 }
 
 .filter span:hover {

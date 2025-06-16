@@ -20,18 +20,18 @@ export default function ProductPage({ addToCart, cart }) {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`http://localhost:8000/api/products/${id}/`);
+        const response = await fetch(`https://aymen88.pythonanywhere.com/api/products/${id}/`);
         if (!response.ok) {
           throw new Error('Failed to fetch product');
         }
         const data = await response.json();
         setProduct(data);
-        
+
         // Set initial color if product has colors
         if (data.images && data.images.length > 0) {
           setSelectedColor(data.images[0].color || null);
         }
-        
+
         // Set initial size if product is a T-shirt and has available sizes
         if (data.product_type === 'TSHIRT' && data.available_sizes) {
           const sizes = data.available_sizes.split(',').map(s => s.trim()).filter(s => s);
@@ -64,7 +64,7 @@ export default function ProductPage({ addToCart, cart }) {
     : [];
 
   // Filter images by selected color
-  const filteredImages = product?.images?.filter(image => 
+  const filteredImages = product?.images?.filter(image =>
     !selectedColor || image.color === selectedColor
   ) || [];
 
@@ -77,7 +77,7 @@ export default function ProductPage({ addToCart, cart }) {
 
   const nextImage = () => {
     if (filteredImages && filteredImages.length > 0) {
-      setCurrentImageIndex(prev => 
+      setCurrentImageIndex(prev =>
         prev === filteredImages.length - 1 ? 0 : prev + 1
       );
     }
@@ -85,7 +85,7 @@ export default function ProductPage({ addToCart, cart }) {
 
   const prevImage = () => {
     if (filteredImages && filteredImages.length > 0) {
-      setCurrentImageIndex(prev => 
+      setCurrentImageIndex(prev =>
         prev === 0 ? filteredImages.length - 1 : prev - 1
       );
     }
@@ -109,8 +109,8 @@ export default function ProductPage({ addToCart, cart }) {
       // Fallback to first available image if no filtered images
       if (product.images && product.images.length > 0) {
         const fallbackImage = product.images[0];
-        return typeof fallbackImage === 'object' && fallbackImage.image 
-          ? fallbackImage.image 
+        return typeof fallbackImage === 'object' && fallbackImage.image
+          ? fallbackImage.image
           : fallbackImage;
       }
       return '';
@@ -118,7 +118,7 @@ export default function ProductPage({ addToCart, cart }) {
     // Ensure currentImageIndex is within bounds
     const safeIndex = Math.min(currentImageIndex, filteredImages.length - 1);
     const currentImage = filteredImages[safeIndex];
-    
+
     // Handle both API response formats
     if (typeof currentImage === 'object') {
       return currentImage.image ? currentImage.image : '';
@@ -146,15 +146,15 @@ export default function ProductPage({ addToCart, cart }) {
               {cart.reduce((total, item) => total + item.quantity, 0)}
             </span>}
           </div>
-          
+
           {isMenuOpen ? (
-            <FaTimes 
-              className="menu-icon" 
+            <FaTimes
+              className="menu-icon"
               onClick={() => setIsMenuOpen(false)}
             />
           ) : (
-            <FaBars 
-              className="menu-icon" 
+            <FaBars
+              className="menu-icon"
               onClick={() => setIsMenuOpen(true)}
             />
           )}
@@ -169,20 +169,20 @@ export default function ProductPage({ addToCart, cart }) {
                 <FaChevronLeft />
               </button>
             )}
-            
-            <img 
+
+            <img
               src={getCurrentImageUrl()}
               alt={product.title}
               className="main-product-image"
             />
-            
+
             {filteredImages && filteredImages.length > 1 && (
               <button className="nav-button right" onClick={nextImage}>
                 <FaChevronRight />
               </button>
             )}
           </div>
-          
+
           {/* Color Selector */}
           {availableColors.length > 0 && (
             <div className="color-selector">
@@ -205,8 +205,8 @@ export default function ProductPage({ addToCart, cart }) {
           {product.product_type === 'TSHIRT' && availableSizes.length > 0 && (
             <div className="size-selector">
               <h4>Available Sizes:</h4>
-              <select 
-                value={selectedSize} 
+              <select
+                value={selectedSize}
                 onChange={handleSizeSelect}
                 className="size-select-dropdown"
               >
@@ -222,10 +222,10 @@ export default function ProductPage({ addToCart, cart }) {
           {filteredImages && filteredImages.length > 1 && (
             <div className="thumbnail-container">
               {filteredImages.map((img, index) => {
-                const thumbnailUrl = typeof img === 'object' && img.image 
-                  ? img.image 
+                const thumbnailUrl = typeof img === 'object' && img.image
+                  ? img.image
                   : img;
-                
+
                 return (
                   <img
                     key={index}
@@ -244,13 +244,13 @@ export default function ProductPage({ addToCart, cart }) {
           <h1>{product.title}</h1>
           <p className="product-type">{product.product_type === 'TOTEBAG' ? 'Totebag' : 'T-Shirt'}</p>
           <p className="product-price">${product.price}</p>
-          
+
           <div className="full-description">
             <h3>Description</h3>
             <p>{product.description}</p>
           </div>
-          
-          <button 
+
+          <button
             className="add-to-cart-btn"
             onClick={handleAddToCart}
           >
@@ -265,7 +265,7 @@ export default function ProductPage({ addToCart, cart }) {
 // Helper function to get CSS color values
 function getColorValue(color) {
   if (!color) return '#cccccc';
-  
+
   const colors = {
     'white': '#ffffff',
     'black': '#000000',
@@ -280,6 +280,6 @@ function getColorValue(color) {
     'GREEN': '#00ff00',
     'YELLOW': '#ffff00'
   };
-  
+
   return colors[color.toLowerCase()] || '#cccccc';
 }

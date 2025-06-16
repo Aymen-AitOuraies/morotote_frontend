@@ -15,7 +15,7 @@ export default function ProductsPage(props) {
 
     const login = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/auth/login/', {
+            const response = await fetch('https://aymen88.pythonanywhere.com/api/auth/login/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -40,8 +40,8 @@ export default function ProductsPage(props) {
         navigate('/cart');
     };
 
-    const filteredProducts = filter === 'all' 
-        ? products 
+    const filteredProducts = filter === 'all'
+        ? products
         : products.filter(product => {
             if (filter === 'totebags') {
                 return product.product_type === 'TOTEBAG';
@@ -61,15 +61,15 @@ export default function ProductsPage(props) {
                 if (token) {
                     headers['Authorization'] = `Token ${token}`;
                 }
-                
-                const response = await fetch('http://localhost:8000/api/products/', {
+
+                const response = await fetch('https://aymen88.pythonanywhere.com/api/products/', {
                     headers
                 });
-                
+
                 if (!response.ok) {
                     throw new Error('Failed to fetch products');
                 }
-                
+
                 const data = await response.json();
                 setProducts(data.results || data);
             } catch (error) {
@@ -107,19 +107,19 @@ export default function ProductsPage(props) {
             <div className='content'>
                 <div className='container'>
                     <div className='filter'>
-                        <span 
+                        <span
                             className={filter === 'all' ? 'active' : ''}
                             onClick={() => setFilter('all')}
                         >
                             All Products
                         </span>
-                        <span 
+                        <span
                             className={filter === 'totebags' ? 'active' : ''}
                             onClick={() => setFilter('totebags')}
                         >
                             Totebags
                         </span>
-                        <span 
+                        <span
                             className={filter === 'shirts' ? 'active' : ''}
                             onClick={() => setFilter('shirts')}
                         >
@@ -130,9 +130,9 @@ export default function ProductsPage(props) {
                     <div className='products-grid'>
                         {filteredProducts.length > 0 ? (
                             filteredProducts.map(product => (
-                                <ProductCard 
-                                    key={product.id} 
-                                    product={product} 
+                                <ProductCard
+                                    key={product.id}
+                                    product={product}
                                     onAddToCart={() => addToCart(product)}
                                 />
                             ))
@@ -142,7 +142,7 @@ export default function ProductsPage(props) {
                     </div>
                 </div>
             </div>
-{/* 
+{/*
             <footer className="footer">
                 <p>&copy; {new Date().getFullYear()} Your Company Name. All rights reserved.</p>
             </footer> */}
@@ -163,8 +163,8 @@ function ProductCard({ product, onAddToCart }) {
         <div className="product-card">
             <div className="image-container" onClick={() => navigate(`/products/${product.id}`)}>
                 {product.images?.length > 0 && (
-                    <img 
-                        src={`${product.images[0].image}`} 
+                    <img
+                        src={`${product.images[0].image}`}
                         alt={product.title}
                         className="product-image"
                         loading="lazy"
@@ -178,12 +178,12 @@ function ProductCard({ product, onAddToCart }) {
                 <h3 className="product-title">{product.title}</h3>
                 <p className="product-price">${product.price}</p>
                 <p className="product-description">
-                    {product.description.length > 100 
-                        ? `${product.description.substring(0, 40)}...` 
+                    {product.description.length > 100
+                        ? `${product.description.substring(0, 40)}...`
                         : product.description}
                 </p>
             </div>
-            <button 
+            <button
                 className="add-to-cart"
                 onClick={handleAddToCart}
                 disabled={isAdding}

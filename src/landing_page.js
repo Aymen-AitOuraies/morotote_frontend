@@ -19,7 +19,7 @@ export default function LandingPage(props) {
 
 const login = async () => {
     try {
-        const response = await fetch('http://localhost:8000/api/auth/login/', {
+        const response = await fetch('https://aymen88.pythonanywhere.com/api/auth/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ useEffect(() => {
                 headers['Authorization'] = `Token ${token}`;
             }
 
-            const response = await fetch('http://localhost:8000/api/products/', {
+            const response = await fetch('https://aymen88.pythonanywhere.com/api/products/', {
                 headers
             });
 
