@@ -122,7 +122,7 @@ function App() {
 
   const total = subtotal + SHIPPING_COST;
 
-  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+  // const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <Router>

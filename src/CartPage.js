@@ -1,7 +1,7 @@
 // CartPage.js
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { FaArrowLeft, FaTimes, FaBars } from 'react-icons/fa';
+import { FaTimes, FaBars } from 'react-icons/fa';
 import logo from './assets/logo.png';
 import './CartPage.css'
 
@@ -36,11 +36,11 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
   // Get available colors from product images
   const getAvailableColors = (product) => {
     if (!product.images || product.images.length === 0) return [];
-    
+
     const colors = product.images
       .filter(img => img.color && img.color.trim() !== '')
       .map(img => img.color);
-    
+
     // Remove duplicates
     return [...new Set(colors)];
   };
@@ -48,7 +48,7 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
   // Get available sizes for T-shirts
   const getAvailableSizes = (product) => {
     if (product.product_type !== 'TSHIRT' || !product.available_sizes) return [];
-    
+
     return product.available_sizes
       .split(',')
       .map(size => size.trim())
@@ -62,7 +62,7 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
 
     cart.forEach(item => {
       const itemErrors = {};
-      
+
       // Check if T-shirt has size selected
       if (item.product_type === 'TSHIRT') {
         const availableSizes = getAvailableSizes(item);
@@ -71,14 +71,14 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
           hasErrors = true;
         }
       }
-      
+
       // Check if product has color options and color is selected
       const availableColors = getAvailableColors(item);
       if (availableColors.length > 0 && !item.selectedColor) {
         itemErrors.color = 'Please select a color';
         hasErrors = true;
       }
-      
+
       if (Object.keys(itemErrors).length > 0) {
         errors[item.id] = itemErrors;
       }
@@ -106,13 +106,13 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
           <li onClick={() => navigate('/contact')}>Contact Us</li>
         </ul>
         <div className="header-right">
-          <button 
+          <button
             className="continue-shopping-btn"
             onClick={() => navigate('/')}
           >
             Continue Shopping
           </button>
-          
+
           {isMenuOpen ? (
             <FaTimes className="menu-icon" onClick={() => setIsMenuOpen(false)}/>
           ) : (
@@ -136,18 +136,18 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
                 const availableColors = getAvailableColors(item);
                 const availableSizes = getAvailableSizes(item);
                 const itemErrors = checkoutErrors[item.id] || {};
-                
+
                 return (
                   <div key={item.id} className="cart-item">
-                    <img 
-                      src={`${item.images?.[0]?.image}`} 
+                    <img
+                      src={`${item.images?.[0]?.image}`}
                       alt={item.title}
                       className="cart-item-image"
                     />
                     <div className="cart-item-info">
                       <h3>{item.title}</h3>
                       <p className="price">Price: {itemPrice.toFixed(2)} DHS</p>
-                      
+
                       {/* Color Selection */}
                       {availableColors.length > 0 && (
                         <div className="option-selector">
@@ -201,7 +201,7 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
                       </div>
                       <p className="item-total">Total: {(itemPrice * item.quantity).toFixed(2)} DHS</p>
                     </div>
-                    <button 
+                    <button
                       className="remove-item"
                       onClick={() => handleRemoveItem(item)}
                     >
@@ -226,15 +226,15 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
                 <span>Total</span>
                 <span>{total.toFixed(2)} DHS</span>
               </div>
-              
+
               {/* Show checkout errors if any */}
               {Object.keys(checkoutErrors).length > 0 && (
                 <div className="checkout-error-message">
                   Please select all required options before proceeding to checkout.
                 </div>
               )}
-              
-              <button 
+
+              <button
                 className="checkout-button"
                 onClick={handleCheckout} // Call the validation function
               >

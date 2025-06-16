@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { FaArrowLeft, FaTimes, FaBars } from 'react-icons/fa';
+import {FaTimes, FaBars } from 'react-icons/fa';
 import logo from './assets/logo.png';
-import './CheckoutPage.css'; // Create this CSS file for styling
+import './CheckoutPage.css';
 
 export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
   const navigate = useNavigate();
@@ -23,11 +23,11 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
   const PAYPAL_CLIENT_ID = "AYU8iAvPKiilN-fXFj-66g2J_buNQXfICl4F9dl5Yqr06Cjtz1VQAYZmf7Bk-3QUHTlnUHC6yvlAwEjb";
 
 
-  const EXCHANGE_RATE_USD_TO_DHS = 10.0; 
+  const EXCHANGE_RATE_USD_TO_DHS = 10.0;
 
-  useEffect(() => {
-    validateForm();
-  }, [formData, cart]); 
+useEffect(() => {
+  validateForm();
+}, [formData, cart, validateForm]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,12 +86,12 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
     return actions.order.create({
       purchase_units: [{
         amount: {
-          currency_code: "USD", 
+          currency_code: "USD",
           value: totalUSD.toFixed(2),
           breakdown: {
             item_total: {
               currency_code: "USD",
-              value: subtotalUSD.toFixed(2) 
+              value: subtotalUSD.toFixed(2)
             },
             shipping: {
               currency_code: "USD",
@@ -148,13 +148,13 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
           <li onClick={() => navigate('/contact')}>Contact Us</li>
         </ul>
         <div className="header-right">
-          <button 
+          <button
             className="continue-shopping-btn"
             onClick={() => navigate('/')}
           >
             Continue Shopping
           </button>
-          
+
           {isMenuOpen ? (
             <FaTimes className="menu-icon" onClick={() => setIsMenuOpen(false)}/>
           ) : (
@@ -172,84 +172,84 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
             <form>
               <div className="form-group">
                 <label htmlFor="firstName">First Name:</label>
-                <input 
-                  type="text" 
-                  id="firstName" 
-                  name="firstName" 
-                  value={formData.firstName} 
-                  onChange={handleChange} 
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
                   className={formErrors.firstName ? 'input-error' : ''}
                 />
                 {formErrors.firstName && <span className="error-text">{formErrors.firstName}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="lastName">Last Name:</label>
-                <input 
-                  type="text" 
-                  id="lastName" 
-                  name="lastName" 
-                  value={formData.lastName} 
-                  onChange={handleChange} 
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
                   className={formErrors.lastName ? 'input-error' : ''}
                 />
                 {formErrors.lastName && <span className="error-text">{formErrors.lastName}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="email">Email:</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email" 
-                  value={formData.email} 
-                  onChange={handleChange} 
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className={formErrors.email ? 'input-error' : ''}
                 />
                 {formErrors.email && <span className="error-text">{formErrors.email}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="phone">Phone Number:</label>
-                <input 
-                  type="tel" 
-                  id="phone" 
-                  name="phone" 
-                  value={formData.phone} 
-                  onChange={handleChange} 
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
                   className={formErrors.phone ? 'input-error' : ''}
                 />
                 {formErrors.phone && <span className="error-text">{formErrors.phone}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="address">Address:</label>
-                <input 
-                  type="text" 
-                  id="address" 
-                  name="address" 
-                  value={formData.address} 
-                  onChange={handleChange} 
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
                   className={formErrors.address ? 'input-error' : ''}
                 />
                 {formErrors.address && <span className="error-text">{formErrors.address}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="city">City:</label>
-                <input 
-                  type="text" 
-                  id="city" 
-                  name="city" 
-                  value={formData.city} 
-                  onChange={handleChange} 
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
                   className={formErrors.city ? 'input-error' : ''}
                 />
                 {formErrors.city && <span className="error-text">{formErrors.city}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="zipCode">Zip Code:</label>
-                <input 
-                  type="text" 
-                  id="zipCode" 
-                  name="zipCode" 
-                  value={formData.zipCode} 
-                  onChange={handleChange} 
+                <input
+                  type="text"
+                  id="zipCode"
+                  name="zipCode"
+                  value={formData.zipCode}
+                  onChange={handleChange}
                   className={formErrors.zipCode ? 'input-error' : ''}
                 />
                 {formErrors.zipCode && <span className="error-text">{formErrors.zipCode}</span>}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaArrowLeft, FaChevronLeft, FaChevronRight, FaTimes, FaBars, FaShoppingCart} from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaTimes, FaBars, FaShoppingCart} from 'react-icons/fa';
 import logo from './assets/logo.png';
 import './ProductPage.css';
 

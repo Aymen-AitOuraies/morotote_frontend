@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft, FaTimes, FaBars, FaPaperPlane } from 'react-icons/fa';
+import { FaTimes, FaBars, FaPaperPlane } from 'react-icons/fa';
 import logo from './assets/logo.png';
 import './ContactPage.css';
 
@@ -31,7 +31,6 @@ export default function ContactPage() {
     setSubmitStatus(null);
 
     try {
-      // Using FormSubmit service (you'll need to set this up)
       const response = await fetch('https://formsubmit.co/ajax/aymanaitouraies86@gmail.com', {
         method: 'POST',
         headers: {
@@ -79,13 +78,13 @@ export default function ContactPage() {
         </ul>
         <div className="header-right">
           {isMenuOpen ? (
-            <FaTimes 
-              className="menu-icon" 
+            <FaTimes
+              className="menu-icon"
               onClick={() => setIsMenuOpen(false)}
             />
           ) : (
-            <FaBars 
-              className="menu-icon" 
+            <FaBars
+              className="menu-icon"
               onClick={() => setIsMenuOpen(true)}
             />
           )}
@@ -95,7 +94,7 @@ export default function ContactPage() {
       <div className="contact-page-container">
         <h1>Contact Us</h1>
         <p className="contact-intro">Have questions or feedback? We'd love to hear from you!</p>
-        
+
         <form onSubmit={handleSubmit} className="contact-form">
           {submitStatus === 'success' && (
             <div className="alert success">
@@ -168,8 +167,8 @@ export default function ContactPage() {
             ></textarea>
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="submit-btn"
             disabled={isSubmitting}
           >

@@ -11,7 +11,7 @@ export default function LandingPage(props) {
     const [products, setProducts] = useState([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     // const [cart, setCart] = useState([]);
-    const [isCartOpen, setIsCartOpen] = useState(false);
+    // const [isCartOpen, setIsCartOpen] = useState(false);
     const [filter, setFilter] = useState('all');
     const [token, setToken] = useState(null);
     const navigate = useNavigate();
@@ -110,7 +110,7 @@ useEffect(() => {
     fetchProducts();
 }, [token]);
 
-    const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    // const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 
     return (
         <>
