@@ -279,25 +279,29 @@
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .cart-item {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
-  
+
   .cart-item-image {
     width: 100px;
     height: 100px;
   }
-  
+
   .color-selector,
   .size-selector {
     max-width: none;
   }
-  
+
   .order-summary {
     position: static;
+  }
+  .continue-shopping-btn
+  {
+    padding: 0.2rem 0.5rem;
   }
 }
 
