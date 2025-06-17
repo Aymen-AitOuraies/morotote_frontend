@@ -3,28 +3,28 @@ import './slideshow.css';
 
 const Slideshow = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  
-  // Create slides from products that have images
+
+
   const slides = products
     .filter(product => product.images && product.images.length > 0)
     .map(product => ({
       id: product.id,
-      image: product.images[0].image, // Use the first image only
+      image: product.images[0].image,
       title: product.title
     }));
 
   useEffect(() => {
     if (slides.length === 0) return;
-    
+
     const interval = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % slides.length);
     }, 1500);
-    
+
     return () => clearInterval(interval);
   }, [slides.length]);
 
   if (slides.length === 0) {
-    return null; // Don't render slideshow if there are no slides
+    return null;
   }
 
   return (

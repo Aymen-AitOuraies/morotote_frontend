@@ -245,8 +245,6 @@
   outline: none;
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
-
-/* Error styles */
 .color-selector.error,
 .size-selector.error {
   border-color: #d32f2f;
@@ -273,7 +271,7 @@
   text-align: center;
 }
 
-/* Responsive design */
+
 @media (max-width: 768px) {
   .cart-container {
     flex-direction: column;
@@ -305,7 +303,6 @@
   }
 }
 
-/* Ensure proper spacing and alignment */
 .cart-item-info > * {
   margin-bottom: 10px;
 }

@@ -1,9 +1,9 @@
-/* Add these styles to your App.css */
+
 .App {
   text-align: center;
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensure the app takes at least full viewport height */
+  min-height: 100vh;
 }
 
 .app-container {
@@ -13,8 +13,8 @@
 }
 
 .app-main {
-  flex: 1; /* This makes the main content grow to push footer down */
-  padding-bottom: 20px; /* Add some space before footer */
+  flex: 1;
+  padding-bottom: 20px;
 }
 
 .footer {
@@ -23,7 +23,7 @@
   text-align: center;
   padding: 20px 0;
   width: 100%;
-  margin-top: auto; /* Pushes footer to bottom */
+  margin-top: auto;
 }
 
 .footer p {

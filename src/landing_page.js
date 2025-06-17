@@ -110,7 +110,6 @@ useEffect(() => {
     fetchProducts();
 }, [token]);
 
-    // const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 
     return (
         <>

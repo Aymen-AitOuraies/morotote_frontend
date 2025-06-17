@@ -1,6 +1,4 @@
-
-// CheckoutPage.js
-import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import {FaTimes, FaBars } from 'react-icons/fa';
@@ -25,7 +23,7 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
 
   const EXCHANGE_RATE_USD_TO_DHS = 10.0;
 
-  // Wrap validateForm in useCallback
+
   const validateForm = useCallback(() => {
     let errors = {};
     let valid = true;
@@ -69,11 +67,11 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
     setFormErrors(errors);
     setIsFormValid(valid);
     return valid;
-  }, [formData, cart]); // Add formData and cart as dependencies for useCallback
+  }, [formData, cart]);
 
   useEffect(() => {
     validateForm();
-  }, [formData, cart, validateForm]); // Keep validateForm in useEffect dependencies
+  }, [formData, cart, validateForm]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -288,7 +286,7 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
                 <p className="error-message">Your cart is empty. Please add items to proceed.</p>
             ) : (
                 <>
-                    {/* PayPal Integration */}
+
                     {isFormValid ? (
                     <div className="paypal-buttons-container">
                         <h3>Pay with PayPal</h3>

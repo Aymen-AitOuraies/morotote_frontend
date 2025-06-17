@@ -27,12 +27,11 @@ export default function ProductPage({ addToCart, cart }) {
         const data = await response.json();
         setProduct(data);
 
-        // Set initial color if product has colors
         if (data.images && data.images.length > 0) {
           setSelectedColor(data.images[0].color || null);
         }
 
-        // Set initial size if product is a T-shirt and has available sizes
+
         if (data.product_type === 'TSHIRT' && data.available_sizes) {
           const sizes = data.available_sizes.split(',').map(s => s.trim()).filter(s => s);
           if (sizes.length > 0) {
@@ -50,7 +49,7 @@ export default function ProductPage({ addToCart, cart }) {
     fetchProduct();
   }, [id]);
 
-  // Get available colors from product images
+
   const availableColors = product?.images?.reduce((colors, image) => {
     if (image.color && !colors.includes(image.color)) {
       colors.push(image.color);
@@ -58,17 +57,17 @@ export default function ProductPage({ addToCart, cart }) {
     return colors;
   }, []) || [];
 
-  // Get available sizes for T-shirts
+
   const availableSizes = product?.product_type === 'TSHIRT' && product?.available_sizes
     ? product.available_sizes.split(',').map(s => s.trim()).filter(s => s)
     : [];
 
-  // Filter images by selected color
+
   const filteredImages = product?.images?.filter(image =>
     !selectedColor || image.color === selectedColor
   ) || [];
 
-  // Reset currentImageIndex if it's out of bounds for filtered images
+
   useEffect(() => {
     if (filteredImages.length > 0 && currentImageIndex >= filteredImages.length) {
       setCurrentImageIndex(0);
@@ -93,7 +92,7 @@ export default function ProductPage({ addToCart, cart }) {
 
   const handleColorSelect = (color) => {
     setSelectedColor(color);
-    setCurrentImageIndex(0); // Reset to first image when color changes
+    setCurrentImageIndex(0);
   };
 
   const handleSizeSelect = (e) => {
@@ -106,7 +105,7 @@ export default function ProductPage({ addToCart, cart }) {
 
   const getCurrentImageUrl = () => {
     if (!filteredImages || filteredImages.length === 0) {
-      // Fallback to first available image if no filtered images
+
       if (product.images && product.images.length > 0) {
         const fallbackImage = product.images[0];
         return typeof fallbackImage === 'object' && fallbackImage.image
@@ -115,11 +114,11 @@ export default function ProductPage({ addToCart, cart }) {
       }
       return '';
     }
-    // Ensure currentImageIndex is within bounds
+
     const safeIndex = Math.min(currentImageIndex, filteredImages.length - 1);
     const currentImage = filteredImages[safeIndex];
 
-    // Handle both API response formats
+
     if (typeof currentImage === 'object') {
       return currentImage.image ? currentImage.image : '';
     }
@@ -183,7 +182,6 @@ export default function ProductPage({ addToCart, cart }) {
             )}
           </div>
 
-          {/* Color Selector */}
           {availableColors.length > 0 && (
             <div className="color-selector">
               <h4>Available Colors:</h4>
@@ -201,7 +199,6 @@ export default function ProductPage({ addToCart, cart }) {
             </div>
           )}
 
-          {/* Size Selector for T-shirts */}
           {product.product_type === 'TSHIRT' && availableSizes.length > 0 && (
             <div className="size-selector">
               <h4>Available Sizes:</h4>
@@ -262,7 +259,7 @@ export default function ProductPage({ addToCart, cart }) {
   );
 }
 
-// Helper function to get CSS color values
+
 function getColorValue(color) {
   if (!color) return '#cccccc';
 

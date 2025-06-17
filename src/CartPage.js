@@ -13,27 +13,27 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
   const handleRemoveItem = (item) => {
     removeFromCart(item.id, item.selectedSize, item.selectedColor);
   };
-  // Handle size selection for a cart item
+
   const handleSizeChange = (itemId, size) => {
     updateCartItemOptions(itemId, { size });
-    // Clear any previous error for this item
+
     setCheckoutErrors(prev => ({
       ...prev[itemId],
       size: null
     }));
   };
 
-  // Handle color selection for a cart item
+
   const handleColorChange = (itemId, color) => {
     updateCartItemOptions(itemId, { color });
-    // Clear any previous error for this item
+
     setCheckoutErrors(prev => ({
       ...prev[itemId],
       color: null
     }));
   };
 
-  // Get available colors from product images
+
   const getAvailableColors = (product) => {
     if (!product.images || product.images.length === 0) return [];
 
@@ -41,11 +41,11 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
       .filter(img => img.color && img.color.trim() !== '')
       .map(img => img.color);
 
-    // Remove duplicates
+
     return [...new Set(colors)];
   };
 
-  // Get available sizes for T-shirts
+
   const getAvailableSizes = (product) => {
     if (product.product_type !== 'TSHIRT' || !product.available_sizes) return [];
 
@@ -55,7 +55,7 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
       .filter(size => size.length > 0);
   };
 
-  // Validate cart items before checkout
+
   const validateCartForCheckout = () => {
     const errors = {};
     let hasErrors = false;
@@ -63,7 +63,7 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
     cart.forEach(item => {
       const itemErrors = {};
 
-      // Check if T-shirt has size selected
+
       if (item.product_type === 'TSHIRT') {
         const availableSizes = getAvailableSizes(item);
         if (availableSizes.length > 0 && !item.selectedSize) {
@@ -72,7 +72,6 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
         }
       }
 
-      // Check if product has color options and color is selected
       const availableColors = getAvailableColors(item);
       if (availableColors.length > 0 && !item.selectedColor) {
         itemErrors.color = 'Please select a color';
@@ -88,10 +87,10 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
     return !hasErrors;
   };
 
-  // Handle checkout button click
+
   const handleCheckout = () => {
     if (validateCartForCheckout()) {
-      // Navigate to the checkout page
+
       navigate('/checkout');
     }
   };
@@ -148,7 +147,6 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
                       <h3>{item.title}</h3>
                       <p className="price">Price: {itemPrice.toFixed(2)} DHS</p>
 
-                      {/* Color Selection */}
                       {availableColors.length > 0 && (
                         <div className="option-selector">
                           <label htmlFor={`color-${item.id}`}>Color:</label>
@@ -171,7 +169,6 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
                         </div>
                       )}
 
-                      {/* Size Selection for T-shirts */}
                       {item.product_type === 'TSHIRT' && availableSizes.length > 0 && (
                         <div className="option-selector">
                           <label htmlFor={`size-${item.id}`}>Size:</label>
@@ -227,7 +224,6 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
                 <span>{total.toFixed(2)} DHS</span>
               </div>
 
-              {/* Show checkout errors if any */}
               {Object.keys(checkoutErrors).length > 0 && (
                 <div className="checkout-error-message">
                   Please select all required options before proceeding to checkout.
@@ -236,7 +232,7 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
 
               <button
                 className="checkout-button"
-                onClick={handleCheckout} // Call the validation function
+                onClick={handleCheckout}
               >
                 Proceed to Checkout
               </button>

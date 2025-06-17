@@ -1,5 +1,3 @@
-/* CheckoutPage.css */
-
 .checkout-page-container {
     padding: 20px;
     max-width: 1200px;
@@ -17,15 +15,15 @@
 
 .checkout-content {
     display: flex;
-    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    flex-wrap: wrap;
     gap: 30px;
     justify-content: center;
 }
 
 .customer-info-form,
 .order-summary-and-payment {
-    flex: 1; /* Both sections take equal width */
-    min-width: 300px; /* Minimum width before wrapping */
+    flex: 1;
+    min-width: 300px;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -56,7 +54,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
-    box-sizing: border-box; /* Include padding in width */
+    box-sizing: border-box;
 }
 
 .form-group input.input-error {

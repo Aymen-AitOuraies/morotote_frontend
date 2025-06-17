@@ -125,8 +125,8 @@
 
 .full-description {
   margin-bottom: 40px;
-  width: 100%; /* Changed from 400px to 100% */
-  max-width: 100%; /* Ensure it doesn't overflow */
+  width: 100%;
+  max-width: 100%;
 }
 
 .full-description h3 {
@@ -141,10 +141,10 @@
   line-height: 1.6;
   color: #555;
   margin-bottom: 20px;
-  white-space: pre-wrap; /* Preserve line breaks */
-  word-wrap: break-word; /* Break long words */
-  max-width: 100%; /* Ensure it doesn't overflow */
-  overflow-wrap: break-word; /* Modern version of word-wrap */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 .add-to-cart-btn {
@@ -186,58 +186,57 @@
   border-color: #adb5bd;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .product-page-container {
     flex-direction: column;
     padding: 15px;
     gap: 20px;
   }
-  
+
   .product-images-section {
     max-width: 100%;
   }
-  
+
   .main-image-container {
     height: 400px;
   }
-  
+
   .product-details {
     max-width: 100%;
     padding: 0;
   }
-  
+
   .product-details h1 {
     font-size: 2rem;
   }
-  
+
   .product-price {
     font-size: 1.8rem;
   }
-  
+
   .nav-button {
     width: 40px;
     height: 40px;
   }
-  
+
   .nav-button.left {
     left: 10px;
   }
-  
+
   .nav-button.right {
     right: 10px;
   }
-  
+
   .thumbnail {
     width: 60px;
     height: 60px;
   }
 }
-/* Add these styles to your ProductPage.css */
+
 
 .color-selector {
   margin: 20px 0;
-  border: 1px solid #eee; /* Add this for debugging */
+  border: 1px solid #eee;
   padding: 10px;
   border-radius: 8px;
 }
@@ -285,7 +284,6 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Add to ProductPage.css */
 .loading-message, .error-message {
   text-align: center;
   padding: 40px;
