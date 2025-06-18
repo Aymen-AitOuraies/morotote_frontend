@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import {FaTimes, FaBars } from 'react-icons/fa';
+import { FaTimes, FaBars } from 'react-icons/fa';
 import logo from './assets/logo.png';
 import './CheckoutPage.css';
 
@@ -19,10 +19,10 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
   });
   const [formErrors, setFormErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
-  const PAYPAL_CLIENT_ID = "AYU8iAvPKiilN-fXFj-66g2J_buNQXfICl4F9dl5Yqr06Cjtz1VQAYZmf7Bk-3QUHTlnUHC6yvlAwEjb";
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
+  const PAYPAL_CLIENT_ID = process.env.REACT_APP_PAYPAL_CLIENT_ID;
   const EXCHANGE_RATE_USD_TO_DHS = 10.0;
-
 
   const validateForm = useCallback(() => {
     let errors = {};
@@ -110,32 +110,58 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
     });
   };
 
-  const onApprove = (data, actions) => {
-    return actions.order.capture().then(function(details) {
-      alert('Transaction completed by ' + details.payer.name.given_name);
-      console.log('Transaction details:', details);
-      navigate('/checkout/success');
-    }).catch(error => {
-      console.error('Error capturing PayPal order:', error);
-      alert('Payment failed. Please try again.');
-    });
+  const onApprove = async (data, actions) => {
+    setIsProcessingPayment(true);
+    try {
+      const details = await actions.order.capture();
+
+      // Send payment and shipping data to your backend
+      const verificationResponse = await fetch('/api/verify-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderID: data.orderID,
+          paymentDetails: details,
+          shippingInfo: formData,
+          cartItems: cart
+        })
+      });
+
+      const verificationData = await verificationResponse.json();
+
+      if (verificationData.success) {
+        navigate('/checkout/success', { state: {
+          paymentDetails: details,
+          shippingInfo: formData,
+          orderItems: cart
+        }});
+      } else {
+        throw new Error('Payment verification failed');
+      }
+    } catch (error) {
+      console.error('Payment processing error:', error);
+      alert('Payment processing failed. Please try again.');
+    } finally {
+      setIsProcessingPayment(false);
+    }
   };
 
   const onError = (err) => {
-    console.error("PayPal Checkout onError", err);
-    alert('An error occurred during payment. Please try again.');
+    console.error("PayPal Checkout Error:", err);
+    alert('An error occurred during payment processing. Please try again.');
   };
 
   const onCancel = (data) => {
-    console.log('PayPal Checkout cancelled', data);
-    alert('Payment cancelled.');
+    console.log('Payment cancelled by user:', data);
   };
+
   useEffect(() => {
     if (cart.length === 0) {
       navigate('/cart');
     }
   }, [cart, navigate]);
-
 
   return (
     <>
@@ -286,17 +312,21 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
                 <p className="error-message">Your cart is empty. Please add items to proceed.</p>
             ) : (
                 <>
-
                     {isFormValid ? (
                     <div className="paypal-buttons-container">
                         <h3>Pay with PayPal</h3>
-                        <PayPalScriptProvider options={{ "client-id": PAYPAL_CLIENT_ID }}>
+                        {isProcessingPayment && <div className="payment-loading">Processing your payment...</div>}
+                        <PayPalScriptProvider options={{
+                          "client-id": PAYPAL_CLIENT_ID,
+                          "currency": "USD"
+                        }}>
                             <PayPalButtons
                                 style={{ layout: "vertical", color: "blue", shape: "rect", label: "paypal" }}
                                 createOrder={createOrder}
                                 onApprove={onApprove}
                                 onError={onError}
                                 onCancel={onCancel}
+                                disabled={isProcessingPayment}
                             />
                         </PayPalScriptProvider>
                     </div>
