@@ -106,7 +106,7 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
         currency: "DHS"
       };
 
-const response = await fetch("https://formsubmit.co/ajax/aymanaitouraies16@gmail.com", {
+const response = await fetch("https://formsubmit.co/ajax/morotote47@gmail.com", {
   method: "POST",
   headers: {
     'Content-Type': 'application/json',
