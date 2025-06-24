@@ -19,7 +19,7 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
   const [formErrors, setFormErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submissionMessage, setSubmissionMessage] = useState(''); // State for success/error message
+  const [submissionMessage, setSubmissionMessage] = useState('');
 
   const validateForm = useCallback(() => {
     let errors = {};
@@ -58,7 +58,7 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
     }
 
     if (cart.length === 0) {
-      valid = false; // Cart must not be empty
+      valid = false;
     }
 
     setFormErrors(errors);
@@ -76,8 +76,8 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    setSubmissionMessage(''); // Clear any previous messages
+    e.preventDefault();
+    setSubmissionMessage('');
 
     if (!validateForm()) {
       setSubmissionMessage('Please correct the errors in the form.');
@@ -92,37 +92,43 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
     setIsSubmitting(true);
     try {
       const orderDetails = {
-        ...formData,
-        cartItems: cart.map(item => ({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        zipCode: formData.zipCode,
+        cartItems: JSON.stringify(cart.map(item => ({
           title: item.title,
           quantity: item.quantity,
           price: item.price,
           selectedSize: item.selectedSize,
           selectedColor: item.selectedColor
-        })),
+        }))),
         subtotal: subtotal.toFixed(2),
         shippingCost: shippingCost.toFixed(2),
         total: total.toFixed(2),
         currency: "DHS"
       };
 
-const response = await fetch("https://formsubmit.co/ajax/morotote47@gmail.com", {
-  method: "POST",
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    _subject: `New Order - ${formData.firstName} ${formData.lastName}`,
-    _replyto: formData.email,
-    ...orderDetails
-  })
-});
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: '57d28a3f-512c-44a5-a06c-043a7c7bad65',
+          subject: `New Order - ${formData.firstName} ${formData.lastName}`,
+          ...orderDetails
+        })
+      });
 
-      if (response.ok) {
+      const result = await response.json();
+      if (result.success) {
         setSubmissionMessage('Your order has been placed successfully! We will contact you shortly.');
       } else {
-        const errorData = await response.json();
-        setSubmissionMessage(`Submission failed: ${errorData.message || 'Server error'}`);
+        setSubmissionMessage(`Submission failed: ${result.message || 'Server error'}`);
       }
     } catch (error) {
       console.error('Submission error:', error);
@@ -133,7 +139,6 @@ const response = await fetch("https://formsubmit.co/ajax/morotote47@gmail.com", 
   };
 
   useEffect(() => {
-    // Redirect to cart if cart is empty, unless we are already on success page
     if (cart.length === 0 && !window.location.pathname.includes('/checkout/success')) {
       navigate('/cart');
     }
@@ -170,7 +175,7 @@ const response = await fetch("https://formsubmit.co/ajax/morotote47@gmail.com", 
         <div className="checkout-content">
           <div className="customer-info-form">
             <h3>Shipping Information</h3>
-            <form onSubmit={handleSubmit}> {/* Add onSubmit handler to the form */}
+            <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="firstName">First Name:</label>
                 <input
@@ -255,7 +260,6 @@ const response = await fetch("https://formsubmit.co/ajax/morotote47@gmail.com", 
                 />
                 {formErrors.zipCode && <span className="error-text">{formErrors.zipCode}</span>}
               </div>
-              {/* The Place Order button will be outside this form, but still trigger handleSubmit */}
             </form>
           </div>
 

@@ -31,18 +31,19 @@ export default function ContactPage() {
     setSubmitStatus(null);
 
     try {
-      const response = await fetch('https://formsubmit.co/ajax/morotote47@gmail.com', {
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
         },
         body: JSON.stringify({
-          name: `${formData.firstName} ${formData.lastName}`,
+          access_key: '57d28a3f-512c-44a5-a06c-043a7c7bad65',
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           email: formData.email,
           phone: formData.phone || 'Not provided',
           message: formData.message,
-          _subject: 'New Contact Form Submission'
+          subject: 'New Contact Form Submission'
         })
       });
 
