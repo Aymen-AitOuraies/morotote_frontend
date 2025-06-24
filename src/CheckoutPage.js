@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaTimes, FaBars } from 'react-icons/fa';
 import logo from './assets/logo.png';
@@ -24,26 +24,23 @@ export default function CheckoutPage({ cart, subtotal }) {
   const [total, setTotal] = useState(0);
 
   // Simplified city options with shipping costs
-  const cities = [
-    { name: 'Select a city', value: '', shipping: 0 },
-    { name: 'Casablanca (35 DHS shipping)', value: 'casablanca', shipping: 35 },
-    { name: 'Mohammedia (20 DHS shipping)', value: 'mohammedia', shipping: 20 },
-    { name: 'Other Cities (40 DHS shipping)', value: 'other', shipping: 40 }
-  ];
-
+const cities = useMemo(() => [
+{ name: 'Select a city', value: '', shipping: 0 },
+ { name: 'Casablanca (35 DHS shipping)', value: 'casablanca', shipping: 35 },
+{ name: 'Mohammedia (20 DHS shipping)', value: 'mohammedia', shipping: 20 },
+{ name: 'Other Cities (40 DHS shipping)', value: 'other', shipping: 40 }
+], []);
   // Calculate shipping cost based on selected city
+useEffect(() => {
   const calculateShipping = (cityValue) => {
     const selectedCity = cities.find(c => c.value === cityValue);
     return selectedCity ? selectedCity.shipping : 0;
   };
 
-  // Update shipping and total when city or subtotal changes
-  useEffect(() => {
-    const newShippingCost = calculateShipping(formData.city);
-    setShippingCost(newShippingCost);
-    setTotal(subtotal + newShippingCost);
-  }, [formData.city, subtotal]);
-
+  const newShippingCost = calculateShipping(formData.city);
+  setShippingCost(newShippingCost);
+  setTotal(subtotal + newShippingCost);
+}, [formData.city, subtotal, cities]);
   const validateForm = useCallback(() => {
     let errors = {};
     let valid = true;
@@ -129,7 +126,7 @@ export default function CheckoutPage({ cart, subtotal }) {
         city: formData.city,
         zipCode: formData.zipCode,
         cartItems: formattedCartItems,
-        rawCartItems: JSON.stringify(cart),
+        // rawCartItems: JSON.stringify(cart),
         subtotal: subtotal.toFixed(2) + ' DHS',
         shippingCost: shippingCost.toFixed(2) + ' DHS',
         shippingCity: formData.city,
