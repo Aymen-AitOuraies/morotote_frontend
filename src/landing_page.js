@@ -258,7 +258,7 @@ function ProductCard({ product, onAddToCart }) {
                     {product.product_type === 'TOTEBAG' ? 'Totebag' : 'T-Shirt'}
                 </p>
                 <h3 className="product-title">{product.title}</h3>
-                <p className="product-price">${product.price}</p>
+                <p className="product-price">{product.price} DHS</p>
                 <p className="product-description">
                     {product.description.length > 5
                         ? `${product.description.substring(0,30)}...`
