@@ -44,7 +44,7 @@ export default function ContactPage() {
           phone: formData.phone || 'Not provided',
           message: formData.message,
           subject: 'New Contact Form Submission',
-          honeypot: "",
+          // honeypot: "",
           redirect: "http://morotote.netlify.app/checkout",
           from_name: "Website Contact Form",
         })
