@@ -23,14 +23,12 @@ export default function CheckoutPage({ cart, subtotal }) {
   const [shippingCost, setShippingCost] = useState(0);
   const [total, setTotal] = useState(0);
 
-  // Simplified city options with shipping costs
 const cities = useMemo(() => [
 { name: 'Select a city', value: '', shipping: 0 },
  { name: 'Casablanca (35 DHS shipping)', value: 'casablanca', shipping: 35 },
 { name: 'Mohammedia (20 DHS shipping)', value: 'mohammedia', shipping: 20 },
 { name: 'Other Cities (40 DHS shipping)', value: 'other', shipping: 40 }
 ], []);
-  // Calculate shipping cost based on selected city
 useEffect(() => {
   const calculateShipping = (cityValue) => {
     const selectedCity = cities.find(c => c.value === cityValue);
@@ -131,7 +129,7 @@ useEffect(() => {
         shippingCost: shippingCost.toFixed(2) + ' DHS',
         shippingCity: formData.city,
         total: total.toFixed(2) + ' DHS',
-        honeypot: "",
+        // honeypot: "",
         redirect: "https://morotote.netlify.app/checkout",
         from_name: "Website Order Form",
         subject: `New Order from ${formData.firstName} ${formData.lastName}`,

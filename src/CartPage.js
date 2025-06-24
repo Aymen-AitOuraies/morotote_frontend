@@ -215,10 +215,10 @@ export default function CartPage({ cart, subtotal, shippingCost, updateQuantity,
                 <span>Subtotal ({cart.reduce((total, item) => total + item.quantity, 0)} items)</span>
                 <span>{subtotal.toFixed(2)} DHS</span>
               </div>
-              <div className="summary-row">
+              {/* <div className="summary-row">
                 <span>Shipping</span>
                 <span>{shippingCost.toFixed(2)} DHS</span>
-              </div>
+              </div> */}
               <div className="summary-row total">
                 <span>Total</span>
                 <span>{total.toFixed(2)} DHS</span>
