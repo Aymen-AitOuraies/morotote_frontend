@@ -28,8 +28,8 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #fff;
-    display: flex; /* Added for better internal layout */
-    flex-direction: column; /* Added for better internal layout */
+    display: flex;
+    flex-direction: column;
 }
 
 .customer-info-form h3,
@@ -39,7 +39,7 @@
     color: #555;
 }
 
-.customer-info-form form { /* Added to ensure the form content fills available space */
+.customer-info-form form {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -77,7 +77,7 @@
 }
 
 .summary-details {
-    margin-bottom: 20px; /* Add space between summary and actions */
+    margin-bottom: 20px;
 }
 
 .summary-details .summary-item {
@@ -106,9 +106,9 @@
     color: #333;
 }
 
-.order-actions { /* Styles for the new container for the button and messages */
+.order-actions {
     text-align: center;
-    margin-top: auto; /* Pushes content to the bottom if summary is short */
+    margin-top: auto;
     padding-top: 20px;
     border-top: 1px solid #eee;
 }
@@ -122,9 +122,9 @@
     font-size: 1.1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: 100%; /* Make button full width of its container */
-    max-width: 300px; /* Limit max width for larger screens */
-    margin-top: 20px; /* Space above the button */
+    width: 100%;
+    max-width: 300px;
+    margin-top: 20px;
 }
 
 .submit-order-btn:hover:not(:disabled) {
@@ -161,17 +161,79 @@
     border: 1px solid #80ff80;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .checkout-content {
         flex-direction: column;
     }
     .customer-info-form,
     .order-summary-and-payment {
-        min-width: unset; /* Remove min-width for mobile */
+        min-width: unset;
         width: 100%;
     }
     .submit-order-btn {
         max-width: 100%;
     }
+}
+
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1em;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-group select.input-error {
+    border-color: #dc3545;
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper::after {
+    content: '▼';
+    font-size: 12px;
+    color: #777;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.form-group select option {
+    padding: 8px;
+    background-color: white;
+    color: #333;
+}
+
+.form-group select option:first-child {
+    color: #999;
+}
+
+.form-group select option:checked {
+    background-color: #f0f8ff;
+    font-weight: bold;
+}
+
+.form-group select option:hover {
+    background-color: #007bff;
+    color: white;
 }

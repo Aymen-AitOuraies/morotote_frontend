@@ -4,7 +4,7 @@ import { FaTimes, FaBars } from 'react-icons/fa';
 import logo from './assets/logo.png';
 import './CheckoutPage.css';
 
-export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
+export default function CheckoutPage({ cart, subtotal }) {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -20,6 +20,29 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionMessage, setSubmissionMessage] = useState('');
+  const [shippingCost, setShippingCost] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  // Simplified city options with shipping costs
+  const cities = [
+    { name: 'Select a city', value: '', shipping: 0 },
+    { name: 'Casablanca (35 DHS shipping)', value: 'casablanca', shipping: 35 },
+    { name: 'Mohammedia (20 DHS shipping)', value: 'mohammedia', shipping: 20 },
+    { name: 'Other Cities (40 DHS shipping)', value: 'other', shipping: 40 }
+  ];
+
+  // Calculate shipping cost based on selected city
+  const calculateShipping = (cityValue) => {
+    const selectedCity = cities.find(c => c.value === cityValue);
+    return selectedCity ? selectedCity.shipping : 0;
+  };
+
+  // Update shipping and total when city or subtotal changes
+  useEffect(() => {
+    const newShippingCost = calculateShipping(formData.city);
+    setShippingCost(newShippingCost);
+    setTotal(subtotal + newShippingCost);
+  }, [formData.city, subtotal]);
 
   const validateForm = useCallback(() => {
     let errors = {};
@@ -91,6 +114,12 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
 
     setIsSubmitting(true);
     try {
+      const formattedCartItems = cart.map(item =>
+        `- ${item.title} (Qty: ${item.quantity}) - ${item.price} DHS` +
+        (item.selectedSize ? ` - Size: ${item.selectedSize}` : '') +
+        (item.selectedColor ? ` - Color: ${item.selectedColor}` : '')
+      ).join('\n');
+
       const orderDetails = {
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -99,40 +128,39 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
         address: formData.address,
         city: formData.city,
         zipCode: formData.zipCode,
-        cartItems: JSON.stringify(cart.map(item => ({
-          title: item.title,
-          quantity: item.quantity,
-          price: item.price,
-          selectedSize: item.selectedSize,
-          selectedColor: item.selectedColor
-        }))),
-        subtotal: subtotal.toFixed(2),
-        shippingCost: shippingCost.toFixed(2),
-        total: total.toFixed(2),
-        currency: "DHS"
+        cartItems: formattedCartItems,
+        rawCartItems: JSON.stringify(cart),
+        subtotal: subtotal.toFixed(2) + ' DHS',
+        shippingCost: shippingCost.toFixed(2) + ' DHS',
+        shippingCity: formData.city,
+        total: total.toFixed(2) + ' DHS',
+        honeypot: "",
+        redirect: "https://morotote.netlify.app/checkout",
+        from_name: "Website Order Form",
+        subject: `New Order from ${formData.firstName} ${formData.lastName}`,
       };
 
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          "Accept": "application/json"
         },
         body: JSON.stringify({
           access_key: '57d28a3f-512c-44a5-a06c-043a7c7bad65',
-          subject: `New Order - ${formData.firstName} ${formData.lastName}`,
           ...orderDetails
         })
       });
 
       const result = await response.json();
       if (result.success) {
-        setSubmissionMessage('Your order has been placed successfully! We will contact you shortly.');
+        setSubmissionMessage('Order placed successfully! We will contact you shortly.');
       } else {
-        setSubmissionMessage(`Submission failed: ${result.message || 'Server error'}`);
+        setSubmissionMessage(result.message || 'Submission failed. Please try again.');
       }
     } catch (error) {
       console.error('Submission error:', error);
-      setSubmissionMessage('There was an error submitting your order. Please try again.');
+      setSubmissionMessage('Error submitting order. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -238,14 +266,19 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
               </div>
               <div className="form-group">
                 <label htmlFor="city">City:</label>
-                <input
-                  type="text"
+                <select
                   id="city"
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
                   className={formErrors.city ? 'input-error' : ''}
-                />
+                >
+                  {cities.map((city, index) => (
+                    <option key={index} value={city.value}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
                 {formErrors.city && <span className="error-text">{formErrors.city}</span>}
               </div>
               <div className="form-group">
@@ -281,7 +314,7 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
               </div>
               <div className="summary-row">
                 <span>Shipping:</span>
-                <span>{shippingCost.toFixed(2)} DHS</span>
+                <span>{shippingCost.toFixed(2)} DHS {formData.city && `(${cities.find(c => c.value === formData.city)?.name.split(' ')[0]})`}</span>
               </div>
               <div className="summary-row total">
                 <span>Total:</span>
