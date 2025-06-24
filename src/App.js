@@ -9,7 +9,7 @@ import { loadCartFromLocalStorage, saveCartToLocalStorage } from "./cartUtils";
 import ProductsPage from "./products_page";
 import ContactPage from "./ContactPage";
 import CheckoutPage from "./CheckoutPage";
-import CheckoutSuccess from "./CheckoutSuccess";
+// import CheckoutSuccess from "./CheckoutSuccess";
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -166,7 +166,7 @@ function App() {
                 />
               }
             />
-            <Route path="/checkout/success" element={<CheckoutSuccess />} />
+            {/* <Route path="/checkout/success" element={<CheckoutSuccess />} /> */}
           </Routes>
         </main>
         <footer className="footer">

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { FaTimes, FaBars } from 'react-icons/fa';
 import logo from './assets/logo.png';
 import './CheckoutPage.css';
@@ -19,10 +18,8 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
   });
   const [formErrors, setFormErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-
-  const PAYPAL_CLIENT_ID = process.env.REACT_APP_PAYPAL_CLIENT_ID;
-  const EXCHANGE_RATE_USD_TO_DHS = 10.0;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionMessage, setSubmissionMessage] = useState(''); // State for success/error message
 
   const validateForm = useCallback(() => {
     let errors = {};
@@ -61,7 +58,7 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
     }
 
     if (cart.length === 0) {
-      valid = false;
+      valid = false; // Cart must not be empty
     }
 
     setFormErrors(errors);
@@ -78,87 +75,66 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const createOrder = (data, actions) => {
-    const totalUSD = total / EXCHANGE_RATE_USD_TO_DHS;
-    const subtotalUSD = subtotal / EXCHANGE_RATE_USD_TO_DHS;
-    const shippingCostUSD = shippingCost / EXCHANGE_RATE_USD_TO_DHS;
-    return actions.order.create({
-      purchase_units: [{
-        amount: {
-          currency_code: "USD",
-          value: totalUSD.toFixed(2),
-          breakdown: {
-            item_total: {
-              currency_code: "USD",
-              value: subtotalUSD.toFixed(2)
-            },
-            shipping: {
-              currency_code: "USD",
-              value: shippingCostUSD.toFixed(2)
-            }
-          }
-        },
-        items: cart.map(item => ({
-          name: item.title,
-          quantity: item.quantity,
-          unit_amount: {
-            currency_code: "USD",
-            value: (parseFloat(item.price) / EXCHANGE_RATE_USD_TO_DHS).toFixed(2)
-          },
-        }))
-      }]
-    });
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+    setSubmissionMessage(''); // Clear any previous messages
 
-  const onApprove = async (data, actions) => {
-    setIsProcessingPayment(true);
+    if (!validateForm()) {
+      setSubmissionMessage('Please correct the errors in the form.');
+      return;
+    }
+
+    if (cart.length === 0) {
+      setSubmissionMessage('Your cart is empty. Please add items to proceed.');
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
-      const details = await actions.order.capture();
+      const orderDetails = {
+        ...formData,
+        cartItems: cart.map(item => ({
+          title: item.title,
+          quantity: item.quantity,
+          price: item.price,
+          selectedSize: item.selectedSize,
+          selectedColor: item.selectedColor
+        })),
+        subtotal: subtotal.toFixed(2),
+        shippingCost: shippingCost.toFixed(2),
+        total: total.toFixed(2),
+        currency: "DHS"
+      };
 
-      // Send payment and shipping data to your backend
-      const verificationResponse = await fetch('/api/verify-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          orderID: data.orderID,
-          paymentDetails: details,
-          shippingInfo: formData,
-          cartItems: cart
-        })
-      });
+const response = await fetch("https://formsubmit.co/ajax/aymanaitouraies16@gmail.com", {
+  method: "POST",
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    _subject: `New Order - ${formData.firstName} ${formData.lastName}`,
+    _replyto: formData.email,
+    ...orderDetails
+  })
+});
 
-      const verificationData = await verificationResponse.json();
-
-      if (verificationData.success) {
-        navigate('/checkout/success', { state: {
-          paymentDetails: details,
-          shippingInfo: formData,
-          orderItems: cart
-        }});
+      if (response.ok) {
+        setSubmissionMessage('Your order has been placed successfully! We will contact you shortly.');
       } else {
-        throw new Error('Payment verification failed');
+        const errorData = await response.json();
+        setSubmissionMessage(`Submission failed: ${errorData.message || 'Server error'}`);
       }
     } catch (error) {
-      console.error('Payment processing error:', error);
-      alert('Payment processing failed. Please try again.');
+      console.error('Submission error:', error);
+      setSubmissionMessage('There was an error submitting your order. Please try again.');
     } finally {
-      setIsProcessingPayment(false);
+      setIsSubmitting(false);
     }
   };
 
-  const onError = (err) => {
-    console.error("PayPal Checkout Error:", err);
-    alert('An error occurred during payment processing. Please try again.');
-  };
-
-  const onCancel = (data) => {
-    console.log('Payment cancelled by user:', data);
-  };
-
   useEffect(() => {
-    if (cart.length === 0) {
+    // Redirect to cart if cart is empty, unless we are already on success page
+    if (cart.length === 0 && !window.location.pathname.includes('/checkout/success')) {
       navigate('/cart');
     }
   }, [cart, navigate]);
@@ -194,7 +170,7 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
         <div className="checkout-content">
           <div className="customer-info-form">
             <h3>Shipping Information</h3>
-            <form>
+            <form onSubmit={handleSubmit}> {/* Add onSubmit handler to the form */}
               <div className="form-group">
                 <label htmlFor="firstName">First Name:</label>
                 <input
@@ -279,6 +255,7 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
                 />
                 {formErrors.zipCode && <span className="error-text">{formErrors.zipCode}</span>}
               </div>
+              {/* The Place Order button will be outside this form, but still trigger handleSubmit */}
             </form>
           </div>
 
@@ -308,33 +285,27 @@ export default function CheckoutPage({ cart, subtotal, shippingCost, total }) {
               </div>
             </div>
 
-            {cart.length === 0 ? (
-                <p className="error-message">Your cart is empty. Please add items to proceed.</p>
-            ) : (
-                <>
-                    {isFormValid ? (
-                    <div className="paypal-buttons-container">
-                        <h3>Pay with PayPal</h3>
-                        {isProcessingPayment && <div className="payment-loading">Processing your payment...</div>}
-                        <PayPalScriptProvider options={{
-                          "client-id": PAYPAL_CLIENT_ID,
-                          "currency": "USD"
-                        }}>
-                            <PayPalButtons
-                                style={{ layout: "vertical", color: "blue", shape: "rect", label: "paypal" }}
-                                createOrder={createOrder}
-                                onApprove={onApprove}
-                                onError={onError}
-                                onCancel={onCancel}
-                                disabled={isProcessingPayment}
-                            />
-                        </PayPalScriptProvider>
-                    </div>
-                    ) : (
-                        <p className="fill-form-message">Please fill in all shipping information to enable payment.</p>
-                    )}
-                </>
-            )}
+            <div className="order-actions">
+                {submissionMessage && <p className={submissionMessage.includes('successfully') ? 'success-message' : 'error-message'}>{submissionMessage}</p>}
+
+                {cart.length === 0 ? (
+                    <p className="error-message">Your cart is empty. Please add items to proceed.</p>
+                ) : (
+                    <>
+                        {!isFormValid && (
+                            <p className="fill-form-message">Please fill in all shipping information to place your order.</p>
+                        )}
+                        <button
+                            type="submit"
+                            className="submit-order-btn"
+                            onClick={handleSubmit}
+                            disabled={!isFormValid || isSubmitting || cart.length === 0}
+                        >
+                            {isSubmitting ? 'Placing Order...' : 'Place Order'}
+                        </button>
+                    </>
+                )}
+            </div>
           </div>
         </div>
       </div>
